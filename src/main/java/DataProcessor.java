@@ -6,7 +6,13 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class DataProcessor {
-    public List<String> extractSentences(String fileName) {
+    private String fileName;
+
+    public DataProcessor(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public List<String> extractSentences() {
         byte[] bytes = new byte[0];
         try {
             bytes = Files.readAllBytes(Paths.get(fileName));
@@ -26,6 +32,10 @@ public class DataProcessor {
         return stringList.stream()
                 .map(blank)
                 .toList();
+    }
+
+    public int sentencesCounter(){
+        return extractSentences().size();
     }
 
 }
