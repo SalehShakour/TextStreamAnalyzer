@@ -1,8 +1,12 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DataProcessor {
@@ -52,8 +56,17 @@ public class DataProcessor {
         return Stream.of(content.split("\r?\n")).toList();
     }
 
-    public int sentencesCounter() {
-        return this.extractedSentences.size();
+    public List<String> withoutStopWord() {
+        List<String> wordCounts = extractedSentences.stream()
+                .map(sentence -> Arrays.stream(sentence.split(" ")).filter(word -> !stopWords.contains(word)).collect(Collectors.joining(" "))).toList();
+
+        return wordCounts;
+    }
+
+    public void counter() {
+        System.out.println(extractedSentences.size());
+        System.out.println(withoutStopWord().stream().map(x -> x.split(" ").length).toList());
+        System.out.println(withoutStopWord().stream().map(x -> x.split(" ").length).reduce(0, Integer::sum));
     }
 
 }
