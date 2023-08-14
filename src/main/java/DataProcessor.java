@@ -103,5 +103,9 @@ public class DataProcessor {
         return charSum/allSen;
     }
 
+    public int evenOdd(){
+        return extractedSentences.stream().map(x -> x.split(" ").length).map(x -> x % 2 == 0 ? x : -1 * x).reduce(0, Integer::sum);
+    }
+
 
 }
