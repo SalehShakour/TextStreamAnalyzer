@@ -1,11 +1,10 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class DataProcessor {
@@ -36,6 +35,7 @@ public class DataProcessor {
 
         Function<String, String> blank = s -> s
                 .replaceAll("\r?\n", " ")
+                .replaceAll("[^a-zA-Z0-9\\s]", " ")
                 .replaceAll(" {2,}", " ")
                 .replaceAll("^ | $", "");
 
@@ -66,13 +66,36 @@ public class DataProcessor {
 
     public void counter() {
         System.out.println("all sentences: " + extractedSentences.size());
-        System.out.println("sentence words without stop word:\n" +withoutStopWord().stream().map(x -> x.split(" ").length).toList());
-        System.out.println("all sentences word without stop word: "+ withoutStopWord().stream().map(x -> x.split(" ").length).reduce(0, Integer::sum));
+        System.out.println("sentence words without stop word:\n" + withoutStopWord().stream().map(x -> x.split(" ").length).toList());
+        System.out.println("all sentences word without stop word: " + withoutStopWord().stream().map(x -> x.split(" ").length).reduce(0, Integer::sum));
     }
-    public Map<String, Long> repeatCounter(){
-        System.out.println(totalContent);
-        Map<String, Long> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
-        return map;
+
+    public Map<String ,List<Long>> repeatCounter() {
+        //Map<String, Long> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        Set<String> map = Arrays.stream(totalContent.split(" ")).distinct().collect(Collectors.toSet());
+
+        Map<String ,List<Long>> ref = map.stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
+        IntStream.range(0,extractedSentences.size()).mapToObj(i -> new AbstractMap.SimpleEntry<>(i, extractedSentences.get(i)))
+                .forEach(entry -> {
+                    int index = entry.getKey();
+                    String element = entry.getValue();
+                    Arrays.stream(element.split(" ")).forEach(x -> ref.get(x).add((long) index));
+                });
+
+        return ref;
+    }
+    public int repeatCounter(String key) {
+        Map<String ,List<Long>> map = repeatCounter();
+        return map.get(key).size();
+    }
+
+
+
+    public static void main(String[] args) {
+        DataProcessor dataProcessor = new DataProcessor("sample.txt", "StopWords.txt");
+
+        System.out.println();
     }
 
 }
