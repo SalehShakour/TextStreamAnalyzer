@@ -64,7 +64,7 @@ public class DataProcessor {
         return wordCounts;
     }
 
-    public void counter() {
+    public void printDocDetails() {
         System.out.println("all sentences: " + extractedSentences.size());
         System.out.println("sentence words without stop word:\n" + withoutStopWord().stream().map(x -> x.split(" ").length).toList());
         System.out.println("all sentences word without stop word: " + withoutStopWord().stream().map(x -> x.split(" ").length).reduce(0, Integer::sum));
@@ -73,8 +73,7 @@ public class DataProcessor {
     public Map<String ,List<Long>> repeatCounter() {
         //Map<String, Long> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        Set<String> map = Arrays.stream(totalContent.split(" ")).distinct().collect(Collectors.toSet());
-
+        Set<String> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.toSet());
         Map<String ,List<Long>> ref = map.stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
         IntStream.range(0,extractedSentences.size()).mapToObj(i -> new AbstractMap.SimpleEntry<>(i, extractedSentences.get(i)))
                 .forEach(entry -> {
@@ -88,14 +87,6 @@ public class DataProcessor {
     public int repeatCounter(String key) {
         Map<String ,List<Long>> map = repeatCounter();
         return map.get(key).size();
-    }
-
-
-
-    public static void main(String[] args) {
-        DataProcessor dataProcessor = new DataProcessor("sample.txt", "StopWords.txt");
-
-        System.out.println();
     }
 
 }
