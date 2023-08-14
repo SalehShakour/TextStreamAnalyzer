@@ -97,5 +97,11 @@ public class DataProcessor {
         return result;
     }
 
+    public double charAverage(){
+        double allSen = extractedSentences.size();
+        double charSum = (double) extractedSentences.stream().map(x -> x.split(" ").length).reduce(0, Integer::sum);
+        return charSum/allSen;
+    }
+
 
 }
