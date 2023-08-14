@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -73,8 +74,8 @@ public class DataProcessor {
     public Map<String ,List<Long>> repeatCounter() {
         //Map<String, Long> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        Set<String> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.toSet());
-        Map<String ,List<Long>> ref = map.stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
+        Set<String> setOdWords = Arrays.stream(totalContent.split(" ")).collect(Collectors.toSet());
+        Map<String ,List<Long>> ref = setOdWords.stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
         IntStream.range(0,extractedSentences.size()).mapToObj(i -> new AbstractMap.SimpleEntry<>(i, extractedSentences.get(i)))
                 .forEach(entry -> {
                     int index = entry.getKey();
@@ -88,5 +89,13 @@ public class DataProcessor {
         Map<String ,List<Long>> map = repeatCounter();
         return map.get(key).size();
     }
+
+    public Map<String, List<String>> firstWordMap(){
+        Map<String, List<String>> result = Arrays.stream(totalContent.split(" ")).collect(Collectors.toSet()).stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
+        Consumer<String> consumer = x -> result.get(x.split(" ")[0]).add(x);
+        extractedSentences.forEach(consumer);
+        return result;
+    }
+
 
 }
