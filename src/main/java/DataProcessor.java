@@ -19,7 +19,7 @@ public class DataProcessor {
      * Constructs a new DataProcessor object with the given file names for the main data file and stop words file.
      * It extracts sentences from the main data file and stop words from the stop words file.
      *
-     * @param fileName The name of the main data file
+     * @param fileName          The name of the main data file
      * @param stopWordsFileName The name of the stop words file
      */
     public DataProcessor(String fileName, String stopWordsFileName) {
@@ -107,12 +107,12 @@ public class DataProcessor {
      *
      * @return A map where the keys are words and the values are lists of indices.
      */
-    public Map<String ,List<Long>> repeatCounter() {
+    public Map<String, List<Long>> repeatCounter() {
         //Map<String, Long> map = Arrays.stream(totalContent.split(" ")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         Set<String> setOdWords = Arrays.stream(totalContent.split(" ")).collect(Collectors.toSet());
-        Map<String ,List<Long>> ref = setOdWords.stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
-        IntStream.range(0,extractedSentences.size()).mapToObj(i -> new AbstractMap.SimpleEntry<>(i, extractedSentences.get(i)))
+        Map<String, List<Long>> ref = setOdWords.stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
+        IntStream.range(0, extractedSentences.size()).mapToObj(i -> new AbstractMap.SimpleEntry<>(i, extractedSentences.get(i)))
                 .forEach(entry -> {
                     int index = entry.getKey();
                     String element = entry.getValue();
@@ -121,6 +121,7 @@ public class DataProcessor {
 
         return ref;
     }
+
     /**
      * Returns the number of occurrences of a given key in the map.
      *
@@ -128,7 +129,7 @@ public class DataProcessor {
      * @return The number of occurrences of the key in the map
      */
     public int repeatCounter(String key) {
-        Map<String ,List<Long>> map = repeatCounter();
+        Map<String, List<Long>> map = repeatCounter();
         return map.get(key).size();
     }
 
@@ -138,7 +139,7 @@ public class DataProcessor {
      *
      * @return A map with first words as keys and lists of sentences as values.
      */
-    public Map<String, List<String>> firstWordMap(){
+    public Map<String, List<String>> firstWordMap() {
         Map<String, List<String>> result = Arrays.stream(totalContent.split(" ")).collect(Collectors.toSet()).stream().collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>()));
         Consumer<String> consumer = x -> result.get(x.split(" ")[0]).add(x);
         extractedSentences.forEach(consumer);
@@ -150,7 +151,7 @@ public class DataProcessor {
      *
      * @return The average length of characters in the extracted sentences, or 0 if there are no sentences.
      */
-    public double charAverage(){
+    public double charAverage() {
         return extractedSentences.stream().mapToInt(String::length).average().orElse(0);
     }
 
@@ -160,9 +161,7 @@ public class DataProcessor {
      *
      * @return The sum of the lengths of sentences, with odd-length sentences negated.
      */
-    public int evenOdd(){
+    public int evenOdd() {
         return extractedSentences.stream().map(x -> x.split(" ").length).map(x -> x % 2 == 0 ? x : -1 * x).reduce(0, Integer::sum);
     }
-
-
 }
