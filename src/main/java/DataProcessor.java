@@ -146,14 +146,12 @@ public class DataProcessor {
     }
 
     /**
-     * Calculates the average number of characters per sentence in the extracted sentences.
+     * Calculates the average length of characters in the extracted sentences.
      *
-     * @return The average number of characters per sentence.
+     * @return The average length of characters in the extracted sentences, or 0 if there are no sentences.
      */
     public double charAverage(){
-        double allSen = extractedSentences.size();
-        double charSum = (double) extractedSentences.stream().map(x -> x.split(" ").length).reduce(0, Integer::sum);
-        return charSum/allSen;
+        return extractedSentences.stream().mapToInt(String::length).average().orElse(0);
     }
 
     /**
